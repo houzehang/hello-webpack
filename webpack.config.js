@@ -18,6 +18,14 @@ module.exports = {
 				fallback: 'style-loader',
 				use: ['css-loader'],
 			})
+		}, {
+			test: /\.js$/,
+			loader: 'babel-loader',
+			exclude: /node_modules/
+		}, {
+			test: /\.jsx$/,
+			loader: 'babel-loader',
+			exclude: /node_modules/
 		}]
 	},
 	plugins: [new HtmlWebpackPlugin({
@@ -30,7 +38,7 @@ module.exports = {
 				// collapseWhitespace: true
 			},
 			// 指定生成的js文件是在head里还是在body里面,不写默认在body里面
-			inject: 'head',
+			// inject: 'head',
 			// 缓存相关
 			hash: true
 		}),
