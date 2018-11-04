@@ -35,5 +35,10 @@ module.exports = {
 			hash: true
 		}),
 		new ExtractTextPlugin('styles.css')
-	]
+	],
+	devServer: {
+		port: 9000,
+		////======== 自动打开 ========
+		open: true
+	}
 };
