@@ -8,7 +8,8 @@ let CleanWebpackPlugin = require('clean-webpack-plugin');
 
 module.exports = {
 	entry: {
-		'app.bundle': './src/app.js'
+		'app.bundle': './src/app.js',
+		'app.bundle2': './src/app2.js'
 	},
 	output: {
 		path: __dirname + '/dist',
@@ -38,6 +39,7 @@ module.exports = {
 			title: '有师科技',
 			// 使用的html的模板
 			template: 'src/index.html',
+			filename: 'index.html',
 			// html压缩
 			minify: {
 				// collapseWhitespace: true
@@ -45,7 +47,25 @@ module.exports = {
 			// 指定生成的js文件是在head里还是在body里面,不写默认在body里面
 			// inject: 'head',
 			// 缓存相关
-			hash: true
+			hash: true,
+			chunks: ['app.bundle']
+		}), new HtmlWebpackPlugin({
+			// 指定生成的html文件的名字
+			title: '有师科技',
+			// 使用的html的模板
+			template: 'src/main.html',
+			filename: 'main.html',
+			// html压缩
+			minify: {
+				// collapseWhitespace: true
+			},
+			// 指定生成的js文件是在head里还是在body里面,不写默认在body里面
+			// inject: 'head',
+			// 缓存相关
+			hash: true,
+			chunks: ['app.bundle2'],
+			// 排除某些依赖
+			// excludeChunks:['app.bundle']
 		}),
 		new ExtractTextPlugin('styles.css'),
 		new CleanWebpackPlugin(['dist'])
