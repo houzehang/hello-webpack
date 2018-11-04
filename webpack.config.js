@@ -42,6 +42,28 @@ module.exports = {
 			test: /\.jsx$/,
 			loader: 'babel-loader',
 			exclude: /node_modules/
+		}, {
+			test: /\.(png|jpe?g|gif|svg)$/i,
+			use: [{
+				loader: 'file-loader',
+				options: {
+					name: '[name].[ext]',
+					outputPath: 'images/'
+				},
+			}, {
+				loader: 'image-webpack-loader',
+				options: {
+					bypassOnDebug: true
+				},
+			}]
+		}, {
+			test: /\.(html)$/,
+			use: {
+				loader: 'html-loader',
+				options: {
+					attrs: [':data-src']
+				}
+			}
 		}]
 	},
 	plugins: [new HtmlWebpackPlugin({
