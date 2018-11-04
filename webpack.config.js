@@ -6,6 +6,18 @@ let ExtractTextPlugin = require('extract-text-webpack-plugin');
 ////======== 清除旧的编译生成文件 ========
 let CleanWebpackPlugin = require('clean-webpack-plugin');
 
+let _IS_PROD_EVE_ = process.env.NODE_ENV === 'production';
+
+////======== 使用ExtractTextPlugin前 ======== 
+let cssDev = ['style-loader', 'css-loader'];
+////======== 使用ExtractTextPlugin前(如果开启了模块热替换，不可以使用如下的代码) ======== 
+let cssProd = ExtractTextPlugin.extract({
+	fallback: 'style-loader',
+	use: ['css-loader'],
+});
+let cssConfig = _IS_PROD_EVE_ ? cssProd : cssDev;
+let outputFileName = _IS_PROD_EVE_ ? '[name].[chunkhash].js' : '[name].[hash].js';
+
 let webpack = require('webpack');
 module.exports = {
 	entry: {
@@ -16,19 +28,12 @@ module.exports = {
 		path: __dirname + '/dist',
 		// filename: '[name].[chunkhash].js'
 		////======== 开启模块热替换时需要使用hash(每个文件的hash码统一) ========
-		filename: '[name].[hash].js'
+		filename: outputFileName
 	},
 	module: {
 		rules: [{
 			test: /\.css$/,
-			////======== 使用ExtractTextPlugin前 ======== 
-			use: ['style-loader', 'css-loader']
-
-			////======== 使用ExtractTextPlugin前(如果开启了模块热替换，不可以使用如下的代码) ======== 
-			// use: ExtractTextPlugin.extract({
-			// 	fallback: 'style-loader',
-			// 	use: ['css-loader'],
-			// })
+			use: cssConfig
 		}, {
 			test: /\.js$/,
 			loader: 'babel-loader',
@@ -76,15 +81,13 @@ module.exports = {
 		// new ExtractTextPlugin('styles.css'),
 		new ExtractTextPlugin({
 			filename: 'styles.css',
-			disable: true
+			disable: !_IS_PROD_EVE_
 		}),
 
 		new CleanWebpackPlugin(['dist']),
 
 		////======== 模块热替换 ========
-		new webpack.NamedModulesPlugin(),
-		new webpack.HotModuleReplacementPlugin(),
-	],
+	].concat(_IS_PROD_EVE_ ? [] : [new webpack.NamedModulesPlugin(), new webpack.HotModuleReplacementPlugin()]),
 	devServer: {
 		port: 9000,
 		////======== 自动打开 ========
