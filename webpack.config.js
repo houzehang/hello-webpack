@@ -3,11 +3,16 @@ let HtmlWebpackPlugin = require('html-webpack-plugin');
 ////======== 以link—css的方式注入html ========
 let ExtractTextPlugin = require('extract-text-webpack-plugin');
 
+////======== 清除旧的编译生成文件 ========
+let CleanWebpackPlugin = require('clean-webpack-plugin');
+
 module.exports = {
-	entry: './src/app.js',
+	entry: {
+		'app.bundle': './src/app.js'
+	},
 	output: {
 		path: __dirname + '/dist',
-		filename: 'app.bundle.js'
+		filename: '[name].[chunkhash].js'
 	},
 	module: {
 		rules: [{
@@ -42,7 +47,8 @@ module.exports = {
 			// 缓存相关
 			hash: true
 		}),
-		new ExtractTextPlugin('styles.css')
+		new ExtractTextPlugin('styles.css'),
+		new CleanWebpackPlugin(['dist'])
 	],
 	devServer: {
 		port: 9000,
